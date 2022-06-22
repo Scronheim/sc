@@ -13,6 +13,8 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "axios": "^0.27.2",
+    "dayjs": "^1.11.3",
+    "lodash": "^4.17.21",
     "pinia": "^2.0.14",
     "roboto-fontface": "*",
     "vue": "^3.2.37",
@@ -37,5 +39,15 @@
     "vite-plugin-vuetify": "^1.0.0-alpha.0",
     "vue-cli-plugin-vuetify": "~2.5.1",
     "vue-tsc": "^0.38.1"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "bracketSameLine": true,
+    "bracketSpacing": true,
+    "singleAttributePerLine": true,
+    "vueIndentScriptAndStyle": true
   }
 }

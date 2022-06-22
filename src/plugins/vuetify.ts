@@ -6,6 +6,15 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 
 export default createVuetify({
+  defaults: {
+    VTextField: {
+      hideDetails: true,
+      variant: 'plain'
+    },
+    VBtn: {
+      variant: 'text',
+    }
+  },
   theme: {
     defaultTheme: 'dark'
   }

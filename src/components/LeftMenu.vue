@@ -1,6 +1,6 @@
 <template>
   <v-list nav density="compact">
-    <v-list-item v-for="item in menu" :to="item.to" active-color="primary">
+    <v-list-item v-for="item in store.menu" :to="item.to" active-color="primary">
       <v-list-item-avatar start>
         <v-icon :icon="item.icon" />
       </v-list-item-avatar>
@@ -12,5 +12,4 @@
 <script setup lang="ts">
 import { leftMenuStore } from '@/stores/leftMenu'
 const store = leftMenuStore()
-const menu = store.leftMenu
 </script>

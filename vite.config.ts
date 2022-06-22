@@ -10,17 +10,14 @@ import vuetify from 'vite-plugin-vuetify'
 export default defineConfig({
   server: {
     proxy: {
-      // string shorthand
       '/api': 'http://192.168.24.112',
-    }
+      '/events': 'http://192.168.24.112',
+    },
   },
-  plugins: [
-		vue(),
-		vuetify({ autoImport: true }),
-],
+  plugins: [vue(), vuetify({ autoImport: true })],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })
