@@ -73,12 +73,12 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import type { Object } from '@/interfaces/object'
-  import { objectsStore } from '@/stores/objects'
-  const store = objectsStore()
+  import { useObjectsStore } from '@/stores/objects'
+  const store = useObjectsStore()
   store.getObjects()
   const filter = ref('')
   const filteredObjects = computed<Object[]>(() => {
-    return store.objects.filter((o) => {
+    return store.objects.filter((o:Object) => {
       return (
         filter.value === '' ||
         o.object_name.toUpperCase().indexOf(filter.value.toUpperCase()) >= 0 ||

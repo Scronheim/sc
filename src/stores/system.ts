@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
-export const systemStore = defineStore({
+export const useSystemStore = defineStore({
   id: 'systemStore',
   state: () => ({
     redis: {
@@ -16,7 +16,7 @@ export const systemStore = defineStore({
     },
   }),
   getters: {
-    
+
   },
   actions: {
     async getRedisStatus() {

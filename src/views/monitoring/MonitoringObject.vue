@@ -1,18 +1,24 @@
 <template>
   <v-card flat>
     <v-card-title>
-      <v-btn icon="mdi-arrow-left" @click="$router.push('/monitoring')" />
+      <v-btn
+        icon="mdi-arrow-left"
+        @click="$router.push('/monitoring')" />
       {{ object.object_name }}
     </v-card-title>
     <v-card-text>
       <v-row v-for="chunk in chunkedChannels">
-        <v-col v-for="channel in chunk" cols="3">
+        <v-col v-for="channel in chunk" cols="3" class="pa-0">
           <v-card flat>
-            <v-card-subtitle>{{ channel.group.group_name }} - {{ channel.channel_name }}</v-card-subtitle>
+            <v-card-subtitle style="min-height: 35px">
+              {{ channel.group.group_name }} - {{ channel.channel_name }}
+            </v-card-subtitle>
             <v-card-text>
               <v-row>
                 <v-col>
-                  <v-img v-if="channel.passages[0].path" :src="`/api/image/${channel.passages[0].path}`"/>
+                  <v-img
+                    v-if="channel.passages.length"
+                    :src="`/api/image/${channel.passages[0].image.name}`" />
                 </v-col>
               </v-row>
               <v-table>
@@ -29,15 +35,21 @@
                     <td style="vertical-align: top; text-align: center">
                       {{ utils.convertToHumanDateTime(passage.fixation_date_time) }}
                     </td>
-                    <td style="vertical-align: top; text-align: left" nowrap="nowrap">
+                    <td
+                      style="vertical-align: top; text-align: left"
+                      nowrap="nowrap">
                       {{ passage.gosnum }}{{ passage.regnum }}
                     </td>
                     <td style="vertical-align: top; text-align: center">
                       {{ passage.speed }}
                     </td>
                     <td>
-                      <v-img v-if="passage.path" width="60px" height="60px" :src="`/api/image/${passage.path}`"
-                           style="cursor: pointer"/>
+                      <v-img
+                        v-if="passage.image"
+                        width="60px"
+                        height="60px"
+                        :src="`/api/image/${passage.image.name}`"
+                        style="cursor: pointer" />
                     </td>
                   </tr>
                 </tbody>
@@ -51,80 +63,89 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
+  import { ref, computed, onMounted, onUnmounted } from 'vue'
   import { useRoute } from 'vue-router'
   import _ from 'lodash'
-  import { objectsStore } from '@/stores/objects'
+  import { useObjectsStore } from '@/stores/objects'
   import { utilsStore } from '@/stores/utils'
-  import type { Channel, Group } from "@/interfaces/object"
+  import type { Object, Channel, Group } from '@/interfaces/object'
+  import type Amts from '@/interfaces/amts'
   const route = useRoute()
-  const store = objectsStore()
+  const store = useObjectsStore()
   const utils = utilsStore()
 
-  const object = ref({
-    groups: []
-  })
-  const channelIds = ref([])
-  const stream = ref(null)
+  const object = ref(<Object>(<unknown>{
+    groups: [],
+  }))
+  const stream = ref(<EventSource>{})
 
   onMounted(async () => {
-    await store.getObjects()
-    object.value = store.objects.find((o) => o.id === parseInt(route.params.id))
-    object.value.groups.forEach((g) => {
-      channelIds.value = g.channels.map((c) => c.id)
-    })
-    channelIds.value.forEach(async (channelId) => {
-      const {data} = await store.getLastAmtsByChannelId(channelId)
-      object.value.groups.forEach((g) => {
-        const channel = g.channels.find((c) => c.id === channelId)
+    const { data } = await store.getObjectInfoById(route.params.id)
+    object.value = data
+    for (let group of object.value.groups) {
+      const { data } = await store.getGroupInfoById(group.id)
+      for (const channel of data.channels) {
+        const { data } = await store.getLastAmtsByChannelId(channel.id)
         channel.passages = data.data
-      })
-    })
+      }
+      Object.assign(group, data)
+    }
     connectRedis(`?objects=[${route.params.id}]`)
   })
 
-  const chunkedChannels = computed<Channel>(() => {
-    const chunks:Channel[] = []
-    object.value.groups.forEach((g:Group) => {
-      g.channels.forEach((c:Channel) => {
-        c.passages = [{}]
-        c.group = g
-        chunks.push(c)
-      })
+  onUnmounted(() => {
+    stream.value.close()
+  })
+
+  const chunkedChannels = computed<Channel[]>(() => {
+    const chunks: Channel[] = []
+    object.value.groups.map((g: Group) => {
+      if (g.channels && g.channels.length) {
+        g.channels.map((c: Channel) => {
+          c.group = g
+          chunks.push(c)
+        })
+      }
     })
     return _.chunk(chunks, 4)
   })
 
-  const parseAmts = (amts) => {
+  const parseAmts = (amts: Amts) => {
     if (amts.db_channel_id) {
-      const group = object.value.groups.find((g) => {
+      const group = object.value.groups.find((g: Group) => {
         return g.id === amts.group_id
       })
-      const channel = group.channels.find((c) => {
-        return c.id === amts.db_channel_id
-      })
-      const passage = {
-        fixation_date_time: amts.fixation_time,
-        gosnum: amts.gosnum,
-        speed: +amts.speed.toFixed(3),
-        path: amts.image.name,
-        direction_name: amts.direction_name ? amts.direction_name : amts.group_name,
-        channel_name: channel.channel_name,
-        geopos: amts.geopos,
-      }
-      channel.passages.unshift(passage)
-      if (channel.passages.length > 3) {
-        channel.passages.pop()
+      if (group) {
+        const channel = group.channels.find((c) => {
+          return c.id === amts.db_channel_id
+        })
+        if (channel) {
+          const passage: Amts = {
+            fixation_time: amts.fixation_time,
+            gosnum: amts.gosnum,
+            speed: +amts.speed.toFixed(3),
+            image: {
+              name: amts.image.name,
+            },
+            direction_name: amts.direction_name ? amts.direction_name : amts.group_name,
+            channel_name: channel.channel_name,
+            geopos: amts.geopos,
+          }
+          channel.passages.unshift(passage)
+          if (channel.passages.length > 3) {
+            channel.passages.pop()
+          }
+        }
       }
     }
   }
 
-  const connectRedis = (params) => {
+  const connectRedis = (params: string) => {
     stream.value = new EventSource(`/events${params}`)
-    stream.value.onmessage = function(event) {
+    stream.value.onmessage = function (event) {
       parseAmts(JSON.parse(event.data))
     }
-    stream.value.onerror = function() {
+    stream.value.onerror = function () {
       console.log('error')
       // setTimeout(connectToRedis, 10000);
     }

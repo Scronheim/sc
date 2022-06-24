@@ -139,9 +139,9 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import type User from '@/interfaces/user'
-  import { usersStore } from '@/stores/users'
-  const store = usersStore()
+  import type {User} from '@/interfaces/user'
+  import { useUsersStore } from '@/stores/users'
+  const store = useUsersStore()
   store.getUsers()
   store.getUserGroups()
   const systemGroups: object = store.systemGroups

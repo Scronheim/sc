@@ -9,6 +9,11 @@
             :readonly="isEdit"
             v-model="item.id" />
         </v-col>
+        <v-col>
+          <v-text-field
+            label="Дополнительный идентификатор"
+            v-model="item.additional_text_id" />
+        </v-col>
       </v-row>
       <v-row>
         <v-col>
@@ -24,11 +29,21 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col> <v-select label="Объект" :items="store.objects" item-value="id" item-title="object_name"/> </v-col>
         <v-col>
-          <v-text-field
-            label="Долгота"
-            v-model.number="item.lon" />
+          <v-select
+            label="Объект"
+            :items="objectsStore.objects"
+            item-value="id"
+            item-title="object_name"
+            v-model="item.object_id"/>
+        </v-col>
+        <v-col>
+          <v-select
+            label="КИПТ"
+            :items="controllersStore.controllers"
+            item-value="id"
+            item-title="serial"
+            v-model="item.controller_id"/>
         </v-col>
       </v-row>
     </v-card-text>
@@ -42,15 +57,20 @@
 
 <script setup lang="ts">
   import { ref, defineProps } from 'vue'
-  import { objectsStore } from '@/stores/objects'
+  import { useObjectsStore } from '@/stores/objects'
+  import { useControllersStore } from '@/stores/controllers'
   defineProps({
-    item: Object,
+    item: {
+      type: Object,
+      required: true,
+    },
     isEdit: {
       type: Boolean,
       default: true,
     },
   })
-  const store = objectsStore()
+  const objectsStore = useObjectsStore()
+  const controllersStore = useControllersStore()
 </script>
 
 <style scoped></style>

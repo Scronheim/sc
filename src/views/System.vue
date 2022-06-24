@@ -189,8 +189,8 @@
 </template>
 
 <script setup lang="ts">
-import { systemStore } from '@/stores/system'
-const store = systemStore()
+import { useSystemStore } from '@/stores/system'
+const store = useSystemStore()
 store.getRedisStatus()
 store.getSupervisorStatus()
 store.getStatistics()

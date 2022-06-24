@@ -15,17 +15,20 @@
       <v-text-field label="Фильтр" variant="outlined" v-model="filter" hide-details/>
     </v-card-title>
     <v-card-text>
-      <ObjectsList :objects="store.objects"/>
+      <ObjectsList :objects="objectStore.objects"/>
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { objectsStore } from '@/stores/objects'
+  import { useObjectsStore } from '@/stores/objects'
+  import { useControllersStore } from '@/stores/controllers'
   import ObjectsList from "@/components/ObjectsList.vue"
-  const store = objectsStore()
-  store.getObjects()
+  const objectStore = useObjectsStore()
+  const controllerStore = useControllersStore()
+  objectStore.getObjects()
+  controllerStore.getControllers()
   const hideDisabledObjects = ref(false)
   const filter = ref('')
 </script>

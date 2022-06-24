@@ -1,0 +1,83 @@
+export default interface EventSourceAmts {
+  overlight: boolean
+  violation: number
+  text_mask: string
+  image: {
+    name: string
+  }
+  geopos: {
+    lat: number
+    lon: number
+  }
+  group_name: string
+  country: string
+  gosnum: string
+  camera_target_brightness: number
+  lp_right: number
+  lp_left: number
+  in_time: string
+  car_class: string
+  camera_id: number
+  serial: string
+  amts_id: number
+  event: string
+  place_name: string
+  out_time: string
+  confidence: number
+  inverse: boolean
+  repeated_globally: number
+  license_plate_image: number
+  db_channel_id: number
+  already_recognized: boolean
+  searches_data: []
+  lp_bottom: number
+  average_speed: number | null
+  rcg_channel_id: number
+  object_id: number
+  id: number
+  object_name: string
+  system_id: number
+  fname: string
+  additional_images: {
+    license_plate: string
+  }
+  crop_y: number
+  crop_x: number
+  fixation_time: string
+  best_trajectory_index: number
+  speed: number
+  direction: number
+  direction_name: string
+  trajectory_class: string
+  confirmed: boolean
+  object_lon: number
+  dark: boolean
+  LPN: string
+  y_last: number
+  x_last: number
+  speed_distance: number
+  camera_exposure: number
+  camera_gain: number
+  channel_name: string
+  searches: string[]
+  y_first: number
+  uuid: string
+  raw_speed: number
+  repeated: number
+  image_b64: string
+  low_contrast: boolean
+  mnk_a: number
+  mnk_b: number
+  sync_offset: number
+  host: string
+  coord: number
+  search: string | null
+  channel_id: number
+  camera_integral_illumination: number
+  preset_id: number
+  already_recognized_globally: boolean
+  object_lat: number
+  group_id: number
+  x_first: number
+  lp_top: number
+}

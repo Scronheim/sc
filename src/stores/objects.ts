@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import type { Object } from '@/interfaces/object'
+import { useToast } from 'vue-toastification'
+import type { Object, Group } from '@/interfaces/object'
 
-export const objectsStore = defineStore({
+const toast = useToast()
+
+export const useObjectsStore = defineStore({
   id: 'objectsStore',
   state: () => ({
     objects: [] as Array<Object>,
@@ -14,17 +17,33 @@ export const objectsStore = defineStore({
     ],
   }),
   actions: {
+    //=========================== POST ===========================
+    async insertGroup(group:Group) {
+      await axios.post('/api/groups', group)
+      toast.success('Группа добавлена')
+      await this.getObjects()
+    },
+    //=========================== PUT ===========================
+    async updateObjectInfo(object:Object) {
+      await axios.put(`/api/objects/${object.id}`, object)
+      toast.success('Объект обновлён')
+      await this.getObjects()
+    },
+    //=========================== GET ===========================
+    getChannelInfoById(channelId:number) {
+      return axios.get(`/api/channels/${channelId}`)
+    },
     getGroupInfoById(groupId:number) {
       return axios.get(`/api/groups/${groupId}`)
     },
-    getObjectInfoById(objectId:number) {
+    getObjectInfoById(objectId:string|string[]) {
       return axios.get(`/api/objects/${objectId}`)
     },
     getLastAmtsByChannelId(channelId:number) {
       return axios.get(`/api/lastamts/bychannel/${channelId}`)
     },
     async getObjects() {
-      const { data } = await axios.get('/api/monitor/list')
+      const { data } = await axios.get('/api/objects?results_per_page=10000')
       data.objects.sort((a:Object, b:Object) => {
         if (a.active === b.active) {
           if (a.object_name > b.object_name) return 1

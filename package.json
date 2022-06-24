@@ -19,11 +19,13 @@
     "roboto-fontface": "*",
     "vue": "^3.2.37",
     "vue-router": "^4.0.16",
+    "vue-toastification": "^2.0.0-rc.5",
     "vuetify": "^3.0.0-beta.4",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
+    "@types/lodash": "^4.14.182",
     "@types/node": "^16.11.41",
     "@types/webfontloader": "^1.0.0",
     "@vitejs/plugin-vue": "^2.3.3",
@@ -48,6 +50,7 @@
     "bracketSameLine": true,
     "bracketSpacing": true,
     "singleAttributePerLine": true,
-    "vueIndentScriptAndStyle": true
+    "vueIndentScriptAndStyle": true,
+    "printWidth": 120
   }
 }

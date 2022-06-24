@@ -20,33 +20,35 @@
             <v-col>
               <v-text-field
                 label="Широта по умолчанию"
-                v-model="store.settings['map.default_lat']" />
+                v-model="store.settings.map_default_lat" />
             </v-col>
             <v-col>
               <v-text-field
                 label="Долгота по умолчанию"
-                v-model="store.settings['map.default_lon']" />
+                v-model="store.settings.map_default_lon" />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="10">
               <v-text-field
                 label="URL tile-сервера"
-                v-model="store.settings['map.tile_url']" />
+                v-model="store.settings.map_tile_url" />
             </v-col>
             <v-col>
               <v-text-field
                 label="Увеличение"
                 type="number"
-                v-model.number="store.settings['map.default_zoom']" />
+                v-model.number="store.settings.map_default_zoom" />
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn
             variant="outlined"
-            color="success">Сохранить</v-btn>
+            color="success"
+            @click="updateServerSettings(['map_default_lat', 'map_default_lon', 'map_default_zoom', 'map_tile_url'])">
+            Сохранить</v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
@@ -71,21 +73,26 @@
               <v-text-field
                 label="ID объекта"
                 type="number"
-                v-model.number="store.settings['place.id.cross']" />
+                min="1"
+                v-model.number="store.settings.place_id_cross" />
             </v-col>
             <v-col>
               <v-text-field
                 label="ID системы"
                 type="number"
-                v-model.number="store.settings['place.id.system']" />
+                min="1"
+                v-model.number="store.settings.place_id_system" />
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn
             variant="outlined"
-            color="success">Сохранить</v-btn>
+            color="success"
+            @click="updateServerSettings(['place_id_cross', 'place_id_system'])"
+            >Сохранить</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-col>
@@ -110,15 +117,18 @@
               <v-text-field
                 label="Регион"
                 variant="plain"
-                v-model.number="store.settings['agglomeration']" />
+                v-model.number="store.settings.agglomeration" />
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn
             variant="outlined"
-            color="success">Сохранить</v-btn>
+            color="success"
+            @click="updateServerSettings(['agglomeration'])"
+            >Сохранить</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-col>
@@ -126,7 +136,10 @@
 </template>
 
 <script setup lang="ts">
-import { settingsStore } from '@/stores/settings'
-const store = settingsStore()
-store.getSettings()
+  import { useSettingsStore } from '@/stores/settings'
+  const store = useSettingsStore()
+
+  const updateServerSettings = (settingsArray: Array<string>) => {
+    store.updateServerSettings(settingsArray)
+  }
 </script>
