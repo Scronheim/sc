@@ -10,6 +10,7 @@ import vuetify from 'vite-plugin-vuetify'
 export default defineConfig({
   server: {
     proxy: {
+      // '/api': 'http://172.17.85.9',
       '/api': 'http://192.168.24.112',
       '/events': 'http://192.168.24.112',
     },

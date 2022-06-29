@@ -28,7 +28,7 @@
   const objectStore = useObjectsStore()
   const controllerStore = useControllersStore()
   objectStore.getObjects()
-  controllerStore.getControllers()
+  controllerStore.getAllControllers()
   const hideDisabledObjects = ref(false)
   const filter = ref('')
 </script>

@@ -9,7 +9,7 @@ export const leftMenuStore = defineStore({
       {text: 'Карта', to: '/map', icon: 'mdi-map'},
       {text: 'Перехват', to: '/intersection', icon: 'mdi-monitor-multiple'},
       {text: 'Объекты', to: '/objects', icon: 'mdi-map-marker-multiple'},
-      {text: 'Комплексы', to: '/complexes', icon: 'mdi-server'},
+      {text: 'Комплексы', to: '/controllers', icon: 'mdi-server'},
       {text: 'Пользователи', to: '/users', icon: 'mdi-account-group'},
       {text: 'Система', to: '/system', icon: 'mdi-monitor-dashboard'},
       {text: 'Статистика', to: '/stats', icon: 'mdi-chart-line'},
